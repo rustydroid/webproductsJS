@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 class Product {
   constructor(id, title, desc, price, thumb, code, stock) {
@@ -14,11 +14,11 @@ class Product {
 
 class ProductManager {
   #idControl;
-  constructor() {
+  constructor(path) {
     this.#idControl = 0;
     this.products = [];
     this.encoding = "utf-8";
-    this.path = "./products.json";
+    this.path = path;
     this.fileReaded = false;
   }
 
@@ -31,6 +31,7 @@ class ProductManager {
       return fileStatus;
     } catch (error) {
       console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
     }
   };
 
@@ -49,10 +50,11 @@ class ProductManager {
           this.#idControl = this.products.length;
         }
       } else {
-        await this.saveProducts();
+        throw new Error("json file doesn't exist");
       }
     } catch (error) {
       console.error(`Error reading products from file: ${this.path}, ${error}`);
+      throw Error("Error: ", error.message);
     }
   };
 
@@ -72,7 +74,8 @@ class ProductManager {
       );
       console.log("Products saved on file!!");
     } catch (error) {
-      console.log(error);
+      console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
     }
   };
 
@@ -85,6 +88,7 @@ class ProductManager {
       return checkExist;
     } catch (error) {
       console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
     }
   };
 
@@ -110,6 +114,7 @@ class ProductManager {
       }
     } catch (error) {
       console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
     }
   };
 
@@ -135,11 +140,14 @@ class ProductManager {
   };
 
   // Return all products in array
-  getProducts = async () => {
+  getProducts = async (limit) => {
     await this.readProducts();
-    console.log("List of All products");
-    console.log("========================");
-    console.log(this.products);
+    if (limit > 0 && limit <= this.products.length) {
+      const limitedArray = this.products.slice(0, limit);
+      return limitedArray;
+    } else {
+      return this.products
+    }
   };
 
   // Delete product by id
@@ -153,6 +161,7 @@ class ProductManager {
       await this.saveProducts();
     } catch (error) {
       console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
     }
   };
 
@@ -162,75 +171,15 @@ class ProductManager {
       await this.readProducts();
       let productFound = this.products.find((product) => product.id === id);
       if (productFound) {
-        console.log("Producto: ", productFound);
+        return productFound;
       } else {
-        console.log("Producto Inexistente");
+        return ("Product not found!");
       }
     } catch (error) {
       console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
     }
   };
 }
 
-// TESTING
-// New ProductManager instance
-let productManager = new ProductManager();
-// Calling getProducts
-// console.log(productManager.getProducts());
-
-// Calling addProduct with dummy data
-// productManager.addProduct(
-//   "producto prueba",
-//   "Este es un producto prueba",
-//   200,
-//   "Sin imagen",
-//   "abc123",
-//   25
-// );
-// Calling addProduct with same dummy data as first call
-// returning "Codigo duplicado"
-// productManager.addProduct(
-//   "producto prueba",
-//   "Este es un producto prueba",
-//   200,
-//   "Sin imagen",
-//   "abc123",
-//   25
-// );
-
-// Calling addProduct with extra dummy data
-// productManager.addProduct(
-//   "producto prueba",
-//   "Este es un producto prueba",
-//   200,
-//   "Sin imagen",
-//   "abc345",
-//   25
-// );
-// productManager.addProduct(
-//   "producto prueba",
-//   "Este es un producto prueba",
-//   200,
-//   "Sin imagen",
-//   "abc333",
-//   25
-// );
-
-// Update product with id: 2
-// productManager.updateProduct(
-//   2,
-//   "producto Actualizado",
-//   "Este es un producto prueba actualizado",
-//   200,
-//   "Sin imagen",
-//   "555DDD",
-//   25
-// );
-
-// Search by Product id - Return a product
-// console.log(productManager.getProductById(2));
-// Search by Product id - Return error "Producto Inexistente"
-// console.log(productManager.getProductById(5));
-
-// Delete a product with id: 2
-// productManager.deleteProduct(2);
+export { ProductManager };
