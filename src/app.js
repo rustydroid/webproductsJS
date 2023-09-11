@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 
-app.get("/products?", async (req, res) => {
+app.get("/api/products?", async (req, res) => {
   try {
     const limit = Number(req.query.limit);
     console.log(limit);
@@ -28,7 +28,7 @@ app.get("/products?", async (req, res) => {
   }
 });
 
-app.get("/products/:pId", async (req, res) => {
+app.get("/api/products/:pId", async (req, res) => {
   try {
     const pid = Number(req.params.pId);
       const productById = await productManagerServices.getProductById(pid);
