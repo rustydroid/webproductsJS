@@ -1,5 +1,6 @@
 import express from "express";
 import { productsRouter } from "./routes/products.route.js";
+import { cartsRouter } from "./routes/carts.route.js";
 
 const port = 8081;
 
@@ -17,3 +18,5 @@ app.listen(port, () => console.log("Servidor funcionando OK!"));
 // Routes
 
 app.use("/api/products", productsRouter);
+
+app.use("/api/carts", cartsRouter);

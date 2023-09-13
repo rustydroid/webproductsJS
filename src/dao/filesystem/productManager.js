@@ -27,7 +27,6 @@ class Product {
 class ProductManager {
   #idControl;
   constructor(path) {
-    this.#idControl = 0;
     this.products = [];
     this.encoding = "utf-8";
     this.path = path;
@@ -47,6 +46,18 @@ class ProductManager {
     }
   };
 
+  // Check if Product code already exist in array
+  existProduct = async (code) => {
+    try {
+      await this.readProducts();
+      const checkExist = this.products.some((product) => product.code === code);
+      return checkExist;
+    } catch (error) {
+      console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
+    }
+  };
+
   // Read products from file
   readProducts = async () => {
     try {
@@ -56,11 +67,6 @@ class ProductManager {
         console.log("Products readed from JSON file");
         this.products = JSON.parse(productsRead);
         this.fileReaded = true;
-        if (this.products.length > 1) {
-          this.#idControl = this.products.length - 1;
-        } else {
-          this.#idControl = this.products.length;
-        }
       } else {
         throw new Error("json file doesn't exist");
       }
@@ -91,25 +97,12 @@ class ProductManager {
     }
   };
 
-  // Check if Product code already exist in array
-  existProduct = async (code) => {
-    try {
-      await this.readProducts();
-      const checkExist = this.products.some((product) => product.code === code);
-      return checkExist;
-    } catch (error) {
-      console.log("Error: ", error.message);
-      throw Error("Error: ", error.message);
-    }
-  };
-
   // Add a product checking if the code exist or not
   addProduct = async (newProductData) => {
     try {
       let exist = await this.existProduct(newProductData.code);
       if (!exist) {
-        this.#idControl++;
-        newProductData.id = this.#idControl;
+        newProductData.id = Date.now();
         let newProduct = new Product(
           newProductData.id,
           newProductData.title,
@@ -139,9 +132,11 @@ class ProductManager {
   updateProduct = async (updatedProduct) => {
     try {
       await this.readProducts();
-      const exist = this.products.some((product) => product.id === updatedProduct.id);
+      const exist = this.products.some(
+        (product) => product.id === updatedProduct.id
+      );
       if (exist) {
-        console.log("Producto a actualizar: ",updatedProduct);
+        console.log("Producto a actualizar: ", updatedProduct);
         let productUpdated = new Product(
           updatedProduct.id,
           updatedProduct.title,
