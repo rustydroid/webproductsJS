@@ -1,14 +1,26 @@
 import fs from "fs";
 
 class Product {
-  constructor(id, title, desc, price, thumb, code, stock) {
+  constructor(
+    id,
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnail
+  ) {
     (this.id = id),
       (this.title = title),
-      (this.description = desc),
-      (this.price = price),
-      (this.thumbnail = thumb),
+      (this.description = description),
       (this.code = code),
-      (this.stock = stock);
+      (this.price = price),
+      (this.status = status),
+      (this.stock = stock),
+      (this.category = category),
+      (this.thumbnail = thumbnail);
   }
 }
 
@@ -84,7 +96,6 @@ class ProductManager {
     try {
       await this.readProducts();
       const checkExist = this.products.some((product) => product.code === code);
-      console.log(this.products);
       return checkExist;
     } catch (error) {
       console.log("Error: ", error.message);
@@ -93,24 +104,30 @@ class ProductManager {
   };
 
   // Add a product checking if the code exist or not
-  addProduct = async (title, desc, price, thumb, code, stock) => {
+  addProduct = async (newProductData) => {
     try {
-      let exist = await this.existProduct(code);
+      let exist = await this.existProduct(newProductData.code);
       if (!exist) {
         this.#idControl++;
+        newProductData.id = this.#idControl;
         let newProduct = new Product(
-          this.#idControl,
-          title,
-          desc,
-          price,
-          thumb,
-          code,
-          stock
+          newProductData.id,
+          newProductData.title,
+          newProductData.description,
+          newProductData.code,
+          newProductData.price,
+          newProductData.status,
+          newProductData.stock,
+          newProductData.category,
+          newProductData.thumbnail
         );
+        console.log("Producto a insertar: ", newProduct);
         this.products.push(newProduct);
         await this.saveProducts();
+        return "Producto creado!";
       } else {
         console.log("Producto Duplicado");
+        return "Producto duplicado";
       }
     } catch (error) {
       console.log("Error: ", error.message);
@@ -119,24 +136,39 @@ class ProductManager {
   };
 
   // Update product by Id
-  updateProduct = async (id, title, desc, price, thumb, code, stock) => {
-    await this.readProducts();
-    let productUpdated = new Product(
-      id,
-      title,
-      desc,
-      price,
-      thumb,
-      code,
-      stock
-    );
-    const parseUpdate = this.products.map((product) => {
-      if (product.id === productUpdated.id) return { ...productUpdated };
-      else return product;
-    });
-    this.products = parseUpdate;
-    console.log("Objetos actualizados");
-    await this.saveProducts();
+  updateProduct = async (updatedProduct) => {
+    try {
+      await this.readProducts();
+      const exist = this.products.some((product) => product.id === updatedProduct.id);
+      if (exist) {
+        console.log("Producto a actualizar: ",updatedProduct);
+        let productUpdated = new Product(
+          updatedProduct.id,
+          updatedProduct.title,
+          updatedProduct.description,
+          updatedProduct.code,
+          updatedProduct.price,
+          updatedProduct.status,
+          updatedProduct.stock,
+          updatedProduct.category,
+          updatedProduct.thumbnail
+        );
+        // console.log("Producto a actualizar: ", productUpdated);
+        const parseUpdate = this.products.map((product) => {
+          if (product.id === productUpdated.id) return { ...productUpdated };
+          else return product;
+        });
+        this.products = parseUpdate;
+        await this.saveProducts();
+        console.log("Objetos actualizados");
+        return "Producto actualizado";
+      } else {
+        return "ID de producto no existe";
+      }
+    } catch (error) {
+      console.log("Error: ", error.message);
+      throw Error("Error: ", error.message);
+    }
   };
 
   // Return all products in array
@@ -146,7 +178,7 @@ class ProductManager {
       const limitedArray = this.products.slice(0, limit);
       return limitedArray;
     } else {
-      return this.products
+      return this.products;
     }
   };
 
@@ -173,7 +205,7 @@ class ProductManager {
       if (productFound) {
         return productFound;
       } else {
-        return ("Product not found!");
+        return "Product not found!";
       }
     } catch (error) {
       console.log("Error: ", error.message);
