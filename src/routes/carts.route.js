@@ -6,22 +6,6 @@ const cartManagerServices = new CartManager("./src/files/carts.json");
 const router = Router();
 
 
-// router.get("/", async (req, res) => {
-//   try {
-//     const limit = parseInt(req.query.limit);
-//     console.log(limit);
-//     if (limit !== NaN) {
-//       const carts = await cartManagerServices.get(limit);
-//       res.send(products);
-//     } else {
-//       const products = await productManagerServices.getProducts(0);
-//       res.send(products);
-//     }
-//   } catch (error) {
-//     res.send("Error: ", error.message);
-//   }
-// });
-
 router.post("/", async (req, res) => {
   try {
     console.log("post cart endpoint");
