@@ -5,6 +5,21 @@ const cartManagerServices = new CartManager("./src/files/carts.json");
 
 const router = Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit);
+    console.log(limit);
+    if (limit !== NaN) {
+      const carts = await cartManagerServices.getCarts(limit);
+      res.send(carts);
+    } else {
+      const carts = await cartManagerServices.getCarts(0);
+      res.send(carts);
+    }
+  } catch (error) {
+    res.send("Error: ", error.message);
+  }
+});
 
 router.post("/", async (req, res) => {
   try {

@@ -112,13 +112,23 @@ class CartManager {
         console.log("Producto encontrado");
         console.log(cart.products[productPosition]);
         let oldQty = parseInt(cart.products[productPosition].qty);
-        this.carts[cartPosition].products[productPosition].qty =
-          oldQty + qty;
+        this.carts[cartPosition].products[productPosition].qty = oldQty + qty;
         console.log("Carritos Despues: ", this.carts[cartPosition]);
       }
-        console.log("Carrtios: ", this.carts);
-        await this.saveCarts();
+      console.log("Carrtios: ", this.carts);
+      await this.saveCarts();
     } catch (error) {}
+  };
+
+  // Return all products in array
+  getCarts = async (limit) => {
+    await this.readCarts();
+    if (limit > 0 && limit <= this.carts.length) {
+      const limitedArray = this.carts.slice(0, limit);
+      return limitedArray;
+    } else {
+      return this.carts;
+    }
   };
 
   getCartById = async (id) => {
