@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { CartManager } from "../dao/filesystem/cartManager.js";
+import { __dirname } from "../utils.js";
+import path from "path";
 
-const cartManagerServices = new CartManager("./src/files/carts.json");
+const cartManagerServices = new CartManager(
+  path.join(__dirname, "/files/carts.json")
+);
 
 const router = Router();
 
@@ -32,13 +36,13 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:cId", async (req, res) => {
-    try {
-        const cId = parseInt(req.params.cId);
-        const cartProducts = await cartManagerServices.getCartById(cId);
-        res.send(cartProducts);
-    } catch (error) {
-        res.json({ error: error.message });
-    }
+  try {
+    const cId = parseInt(req.params.cId);
+    const cartProducts = await cartManagerServices.getCartById(cId);
+    res.send(cartProducts);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 });
 
 router.post("/:cid/product/:pid", async (req, res) => {
@@ -48,14 +52,10 @@ router.post("/:cid/product/:pid", async (req, res) => {
     const qty = parseInt(req.body.qty);
     console.log("datos: ", cId, pId, qty);
     const cartUpdated = await cartManagerServices.updateCart(cId, pId, qty);
-    res.send({message: "post cid pid endpoint"})
+    res.send({ message: "post cid pid endpoint" });
   } catch (error) {
     res.json({ error: error.message });
   }
 });
 
-
-
 export { router as cartsRouter };
-    
-    

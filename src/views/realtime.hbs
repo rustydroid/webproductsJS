@@ -1,0 +1,106 @@
+<h1 class="text-center">Pagina Productos Real Time</h1>
+<br />
+<h2>Formulario Crear Producto</h2>
+<hr />
+<form id="createProductForm">
+  <div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Nombre Producto"
+          name="title"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Descripcion"
+          name="description"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Codigo Interno"
+          name="code"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Precio"
+          name="price"
+        />
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Status"
+          name="status"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Stock"
+          name="stock"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Categoria"
+          name="category"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Link Imagen"
+          name="thumbnail"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="row ms-1">
+    <div class="col">
+      <button type="submit" class="btn btn-info">Agregar Producto</button>
+    </div>
+  </div>
+</form>
+<hr />
+
+<h2>Listado de Productos</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">ID</th>
+      <th scope="col">Title</th>
+      <th scope="col">Description</th>
+      <th scope="col">Code</th>
+      <th scope="col">Price</th>
+      <th scope="col">Active</th>
+      <th scope="col">Stock</th>
+      <th scope="col">Category</th>
+      <th scope="col">Thumbnail</th>
+    </tr>
+  </thead>
+  <tbody id="productList">
+
+  </tbody>
+</table>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTime.js"></script>

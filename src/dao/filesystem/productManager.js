@@ -186,6 +186,7 @@ class ProductManager {
       });
       this.products = productsFiltered;
       await this.saveProducts();
+      return true
     } catch (error) {
       console.log("Error: ", error.message);
       throw Error("Error: ", error.message);
